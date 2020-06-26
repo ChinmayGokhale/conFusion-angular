@@ -21,6 +21,7 @@ import { FooterComponent } from './footer/footer.component';
 import { AboutComponent } from './about/about.component';
 import { ContactComponent } from './contact/contact.component';
 import { HomeComponent } from './home/home.component';
+import { LeaderService } from './services/leader.service';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,7 @@ import { HomeComponent } from './home/home.component';
     MatCardModule,
     MatButtonModule
   ],
-  providers: [DishService, PromotionService],
+  providers: [DishService, PromotionService, LeaderService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
