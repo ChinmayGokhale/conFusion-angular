@@ -55,7 +55,7 @@
     </mat-card>
   </div>
 
-
+<!-- Added the styling for leader's description -->
   <div fxFlex>
     <mat-list fxFlex>
       <h2>Corporate Leadership</h2>
@@ -63,7 +63,7 @@
         <img matListAvatar src={{leader.image}} alt={{leader.name}}>
         <p matLine> {{leader.name}}, {{leader.abbr}} </p>
         <p matLine>{{leader.designation}}</p>
-        <p matLine>{{leader.description}}</p>
+        <p matLine style="word-wrap: break-word; white-space: pre-wrap;">{{leader.description}}</p>
       </mat-list-item>
     </mat-list>
   </div>
