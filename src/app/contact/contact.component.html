@@ -47,7 +47,7 @@
         </mat-form-field>
         <mat-form-field class="half-width">
           <input matInput formControlName="lastname" placeholder="Last Name" type="text" required>
-          <mat-error *ngIf="feedbackForm.get('lastname').hasError('required') && feedbackForm.get('lastname').touched">Last name is required</mat-error>
+          <mat-error *ngIf="formErrors.firstname">{{formErrors.lastname}}</mat-error>
         </mat-form-field>
       </p>
       <p>
