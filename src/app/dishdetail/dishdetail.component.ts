@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Inject } from '@angular/core';
+import { Component, OnInit, ViewChild, Inject } from '@angular/core';
 import { Dish } from '../shared/dish';
 import { Comment } from '../shared/comment';
 import { Params, ActivatedRoute } from '@angular/router';
@@ -14,12 +14,14 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 })
 export class DishdetailComponent implements OnInit {
 
+  @ViewChild('cform') commentFormDirective;
   dish: Dish;
   dishIds: string[];
   prev: string;
   next: string;
   commentForm : FormGroup;
   comment : Comment;
+  errMess: string;
 
   formErrors = {
     author: '',
@@ -42,13 +44,14 @@ export class DishdetailComponent implements OnInit {
     private route: ActivatedRoute,
     private location: Location,
     private fb: FormBuilder, 
-    @Inject('baseURL') private baseURL) { this.creatForm(); }
+    @Inject('baseURL') private baseURL) { }
 
   ngOnInit() {
-    this.dishService.getDishIds().subscribe(dishIds => this.dishIds = dishIds);
+    this.createForm();
+    this.dishService.getDishIds().subscribe(dishIds => this.dishIds = dishIds, errmess => this.errMess = <any>errmess);
 
     this.route.params.pipe( switchMap( (params: Params) => this.dishService.getDish( params['id'] ) ) )
-    .subscribe(dish => { this.dish = dish; this.setPrevNext(dish.id); });
+    .subscribe(dish => { this.dish = dish; this.setPrevNext(dish.id);}, errmess => this.errMess = <any>errmess);
   }
 
   setPrevNext(dishId: string) {
@@ -61,7 +64,7 @@ export class DishdetailComponent implements OnInit {
     this.location.back();
   }
 
-  private creatForm(): void {
+  private createForm(): void {
     this.commentForm = this.fb.group({
       author: ['' , [Validators.required , Validators.minLength(2)]] ,
       rating: 5 ,
@@ -78,6 +81,7 @@ export class DishdetailComponent implements OnInit {
     this.comment = this.commentForm.value;
     this.comment.date = new Date().toISOString();
     this.dish.comments.push(this.comment);
+    this.commentFormDirective.resetForm();
     this.commentForm.reset({
       author: '' ,
       rating: 5 ,
