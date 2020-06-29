@@ -41,7 +41,8 @@ export class DishdetailComponent implements OnInit {
   constructor(private dishService: DishService,
     private route: ActivatedRoute,
     private location: Location,
-    private fb: FormBuilder) { this.creatForm(); }
+    private fb: FormBuilder, 
+    @Inject('baseURL') private baseURL) { this.creatForm(); }
 
   ngOnInit() {
     this.dishService.getDishIds().subscribe(dishIds => this.dishIds = dishIds);
