@@ -16,6 +16,7 @@ export class DishdetailComponent implements OnInit {
 
   @ViewChild('cform') commentFormDirective;
   dish: Dish;
+  dishcopy: Dish;
   dishIds: string[];
   prev: string;
   next: string;
@@ -31,12 +32,15 @@ export class DishdetailComponent implements OnInit {
 
   validationMessages = {
     'author': {
-      'required': 'Author is required.' ,
-      'minlength': 'Author must be at least 2 characters long.'
+      'required': 'Author is required. ' ,
+      'minlength': 'Author must be at least 2 characters long.',
+      'maxlength': 'Author is upto 15 characters long. '
     },
     'comment': {
-      'required': 'comment is required.' ,
-      'minlength': 'comment must be at least 2 characters long.'
+      'required': 'comment is required. ' ,
+      'minlength': 'comment must be at least 2 characters long.',
+      'maxlength': 'comment is upto 50 characters long. '
+
     }
   };
 
@@ -51,7 +55,7 @@ export class DishdetailComponent implements OnInit {
     this.dishService.getDishIds().subscribe(dishIds => this.dishIds = dishIds, errmess => this.errMess = <any>errmess);
 
     this.route.params.pipe( switchMap( (params: Params) => this.dishService.getDish( params['id'] ) ) )
-    .subscribe(dish => { this.dish = dish; this.setPrevNext(dish.id);}, errmess => this.errMess = <any>errmess);
+    .subscribe(dish => { this.dish = dish;this.dishcopy = dish; this.setPrevNext(dish.id);}, errmess => this.errMess = <any>errmess);
   }
 
   setPrevNext(dishId: string) {
@@ -66,9 +70,9 @@ export class DishdetailComponent implements OnInit {
 
   private createForm(): void {
     this.commentForm = this.fb.group({
-      author: ['' , [Validators.required , Validators.minLength(2)]] ,
+      author: ['' , [Validators.required , Validators.minLength(2), Validators.maxLength(15)]] ,
       rating: 5 ,
-      comment: ['' , [Validators.required , Validators.minLength(2)]]
+      comment: ['' , [Validators.required , Validators.minLength(2), Validators.maxLength(50)]]
     });
 
     this.commentForm.valueChanges
@@ -80,7 +84,12 @@ export class DishdetailComponent implements OnInit {
   onSubmit() {
     this.comment = this.commentForm.value;
     this.comment.date = new Date().toISOString();
-    this.dish.comments.push(this.comment);
+    this.dishcopy.comments.push(this.comment);
+    this.dishService.putDish(this.dishcopy)
+      .subscribe(dish => {
+        this.dish = dish; this.dishcopy = dish;
+      },
+      errmess => { this.dish = null; this.dishcopy = null; this.errMess = <any>errmess; });
     this.commentFormDirective.resetForm();
     this.commentForm.reset({
       author: '' ,
