@@ -91,5 +91,9 @@
       <p>How? : {{feedbackcopy.contacttype}}</p>
       <p>Feedback: {{feedbackcopy.message}}</p>
     </div>
+    <div *ngIf="errMess" [@expand]>
+      <h2>Error</h2>
+      <h4>{{errMess}}</h4>
+    </div>
   </div>
 </div>
